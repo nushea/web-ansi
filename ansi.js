@@ -3,15 +3,25 @@ ansible = document.getElementById("ansible");
 fontSize = 15;
 offX = 30;
 offY = 50;
+sizeX = 80;
+scalX = .7;
+sizeY = 24;
 
 deffg = "rgb(30,75,255)";
-defbg = "rgb(255, 75, 30)";
+defbg = "rgb(30,30,46)";
+regbg = "rgb(24,24,37)";
+
 
 ansible.style.fontSize = fontSize+"pt";
+ansible.style.fontFamily = "FavFont, monospace";
+//ansible.style.fontWeight = 'bold';
 tally = 0;
-
+function containsAlphabet(str) {
+    return /[a-zA-Z]/.test(str);
+}
 function printer(posX, posY, colbg, colfg, oup){
-	ansible.innerHTML+="<span id=\"i"+tally+"\"> a </span>";
+
+	ansible.innerHTML+="<div id=\"i"+tally+"\"> a </div>";
 	obj = document.getElementById("i"+tally);
 	obj.style.margin			= 0;
 	obj.style.padding			= 0;
@@ -25,12 +35,15 @@ function printer(posX, posY, colbg, colfg, oup){
 	obj.style.alignItems 		= "center";
 	obj.style.justifyContent 	= "center";
 	obj.style.letterSpacing 	= "-2px";
+	obj.style.whiteSpace 		= "pre";
 
 	obj.style.position 			= "absolute";
 	obj.style.left				= offX+posX*(fontSize/2)+"px";
 	obj.style.top 				= offY+posY*fontSize+"px";
 	obj.style.color 			= colfg;
-	obj.style.backgroundColor 	= colbg;
+	if(!(containsAlphabet(oup))){
+		obj.style.backgroundColor = colbg;
+	}
 	obj.innerHTML 				= oup;
 	tally += 1;
 }
@@ -86,11 +99,11 @@ fetch('test.txt')
 					colbg+= tokens[i].substring(0, tokens[i].indexOf('m'))+')';
 					tokens[i] = tokens[i].substring(tokens[i].indexOf('m')+1);
 				}
-				console.log(tokens[i]);
+				//console.log(colbg,tokens[i]);
 				printer(posX,posY, colbg, colfg, tokens[i]);
 			}
 			else{
-				console.log("i"+i+": "+tokens[i]);
+				//console.log("i"+i+": "+tokens[i]);
 			}
 			i++;
 		}

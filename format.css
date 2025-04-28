@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'FavFont';
+    src: url('/FavFont.ttf') format('truetype');
+}
+
+#ansible {
+    font-family: "FavFont", monospace !important;
+    font-size: 30px;
+}
+
