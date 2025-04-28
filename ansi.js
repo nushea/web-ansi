@@ -4,7 +4,6 @@ fontSize = 15;
 offX = 30;
 offY = 50;
 sizeX = 80;
-scalX = .7;
 sizeY = 24;
 
 deffg = "rgb(30,75,255)";
@@ -15,38 +14,70 @@ regbg = "rgb(24,24,37)";
 ansible.style.fontSize = fontSize+"pt";
 ansible.style.fontFamily = "FavFont, monospace";
 //ansible.style.fontWeight = 'bold';
-tally = 0;
+
+arr = Array.from({ length: sizeY }, () => Array(sizeX).fill(0));
+
+async function setupGrid() {
+    let html = "";
+    
+    // Create grid items
+    for (let i = 0; i < sizeY; i++) {
+        for (let j = 0; j < sizeX; j++) {
+            html += "<div id=\"C"+i+","+j+"\" class=\"grid-cell\"></div>";
+        }
+    }
+    
+    ansible.innerHTML = html;
+
+    ansible.style.display = "grid";
+    ansible.style.gridTemplateColumns = `repeat(${sizeX}, min-content)`;
+    ansible.style.gridTemplateRows = `repeat(${sizeY}, min-content)`;
+
+    for (let i = 0; i < sizeY; i++) {
+        for (let j = 0; j < sizeX; j++) {
+            let cell = document.getElementById("C"+i+","+j);
+            arr[i][j] = cell;
+
+            cell.style.margin 			= 0;
+            cell.style.padding 			= 0;
+            cell.style.display 			= "flex"; 
+            cell.style.height 			= (fontSize*1.3) + "px";
+			cell.style.width 			= (fontSize*.6) + "px";
+            cell.style.alignItems 		= "center";
+            cell.style.justifyContent 	= "center";
+            cell.style.whiteSpace 		= "pre";
+            cell.style.backgroundColor	= defbg;
+            
+            cell.innerHTML = "a";
+        }
+    }
+}
+
+
 function containsAlphabet(str) {
     return /[a-zA-Z]/.test(str);
 }
+
 function printer(posX, posY, colbg, colfg, oup){
-
-	ansible.innerHTML+="<div id=\"i"+tally+"\"> a </div>";
-	obj = document.getElementById("i"+tally);
-	obj.style.margin			= 0;
-	obj.style.padding			= 0;
-	obj.style.boxSizing			= "border-box";
-	obj.style.display 			= "inline-block";
-	obj.style.verticalAlign 	= "top";
-	obj.style.lineHeight 		= "1";
-	obj.style.width				= (fontSize / 2)*oup.length+6+"px";
-	obj.style.height			= fontSize+ 6 +"px";
-	obj.style.display 			= "flex";
-	obj.style.alignItems 		= "center";
-	obj.style.justifyContent 	= "center";
-	obj.style.letterSpacing 	= "-2px";
-	obj.style.whiteSpace 		= "pre";
-
-	obj.style.position 			= "absolute";
-	obj.style.left				= offX+posX*(fontSize/2)+"px";
-	obj.style.top 				= offY+posY*fontSize+"px";
-	obj.style.color 			= colfg;
-	if(!(containsAlphabet(oup))){
-		obj.style.backgroundColor = colbg;
-	}
-	obj.innerHTML 				= oup;
-	tally += 1;
+    for (let i = 0; i < oup.length; i++) {
+        let x = Math.floor(posX)+i-1;
+        let y = Math.floor(posY)-1;
+        if (x < 0 || x > sizeX || y < 0 || y > sizeY){ 
+			console.log({"posX": posX, "posY": posY}, {"x": x, "y": y});
+			continue;
+		}
+        let obj = document.getElementById("C" + y + "," + x);
+        if (!obj) continue;
+        obj.style.color = colfg;
+//		obj.style.backgroundColor = colbg;
+        if (oup[i] < 'a' || oup[i] > 'Z') obj.style.backgroundColor = colbg;
+//		if(oup[i] != ' ')
+	        obj.innerHTML = oup[i];
+//		else obj.innerHTML = '_';
+    }
 }
+
+/*
 /*
 i = 0;
 while(i<100){
@@ -56,13 +87,14 @@ while(i<100){
 */
 fetch('test.txt')
   .then(response => response.text())
-  .then(text => {
+  .then(async text => {
 		tokens = text.split("\x1b");
 		i=0;
 		let posX = 0;
 		let posY = 0;
 		let colbg = defbg;
 		let colfg = deffg;
+		await setupGrid();
 		while(i<tokens.length){
 			if(!tokens[i]){i++; continue;}
 			else if(tokens[i].includes("[0m")){
@@ -77,7 +109,6 @@ fetch('test.txt')
 				if(posX == 0) posX = 1;
 			}
 			else if(tokens[i].includes("[2J")){
-				ansible.innerHTML = "";
 				tally = 0;
 			}
 			else if(tokens[i][0] == '['){
