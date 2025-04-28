@@ -71,14 +71,13 @@ function printer(posX, posY, colbg, colfg, oup){
         let obj = document.getElementById("C" + y + "," + x);
         if (!obj) continue;
         obj.style.color = colfg;
-//		obj.style.backgroundColor = colbg;
-        if (oup[i] < 'a' || oup[i] > 'Z') obj.style.backgroundColor = colbg;
+
 		if(blink){
-			obj.innerHTML = "b";
+			obj.innerHTML = `<span class="blink-css">${oup}</span>`;
+			continue;
 		}
-		else
+        if (oup[i] < 'a' || oup[i] > 'Z') obj.style.backgroundColor = colbg;
 			obj.innerHTML = oup[i];
-//		else obj.innerHTML = '_';
     }
 }
 
@@ -161,11 +160,11 @@ fetch('test.txt')
 					else
 						colbg = ansiTable(tokens[i].substring(4,7));
 					tokens[i] = tokens[i].substring(7);
-					if(tokens[i][0]=="m" && tokens[i].length < 3)
+					if(tokens[i][0]=="m" && tokens[i].length < 2)
 						tokens[i] = tokens[i].substring(1);
 				}
 				if(blink)
-					console.log("BLINK: "+posX+" "+posY);
+					tokens[i]="_";
 				printer(posX,posY, colbg, colfg, tokens[i]);
 			}
 			else{
