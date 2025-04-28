@@ -16,6 +16,7 @@ ansible.style.fontFamily = "FavFont, monospace";
 //ansible.style.fontWeight = 'bold';
 
 arr = Array.from({ length: sizeY }, () => Array(sizeX).fill(0));
+let blink = false;
 
 async function setupGrid() {
     let html = "";
@@ -72,8 +73,11 @@ function printer(posX, posY, colbg, colfg, oup){
         obj.style.color = colfg;
 //		obj.style.backgroundColor = colbg;
         if (oup[i] < 'a' || oup[i] > 'Z') obj.style.backgroundColor = colbg;
-//		if(oup[i] != ' ')
-	        obj.innerHTML = oup[i];
+		if(blink){
+			obj.innerHTML = "b";
+		}
+		else
+			obj.innerHTML = oup[i];
 //		else obj.innerHTML = '_';
     }
 }
@@ -124,6 +128,9 @@ fetch('test.txt')
 				
 			}
 			else if(tokens[i][0] == '['){
+				blink = false;
+				if(tokens[i].includes("[5m"))
+					blink = true;
 				if(tokens[i].includes("[38;2;") || tokens[i].includes(";48;2;")){
 					if(tokens[i].startsWith("[38;2;")){
 						tokens[i] = tokens[i].substring(6);
@@ -157,6 +164,8 @@ fetch('test.txt')
 					if(tokens[i][0]=="m" && tokens[i].length < 3)
 						tokens[i] = tokens[i].substring(1);
 				}
+				if(blink)
+					console.log("BLINK: "+posX+" "+posY);
 				printer(posX,posY, colbg, colfg, tokens[i]);
 			}
 			else{

@@ -2,9 +2,16 @@
     font-family: 'FavFont';
     src: url('/FavFont.ttf') format('truetype');
 }
-
+body {
+	background-color: rgb(30, 30, 46);
+}
 #ansible {
     font-family: "FavFont", monospace !important;
     font-size: 30px;
+	margin-top: 25vh;
+    padding: 0px;
+	position: flex;
+	justify-content: center;
+	align-items: center;
 }
 
