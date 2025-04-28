@@ -79,22 +79,22 @@ function printer(posX, posY, colbg, colfg, oup){
 }
 
 function ansiTable(inp){
-	if(inp.includes("30")||inp.includes(" 40")) return "Black";
-	if(inp.includes("31")||inp.includes(" 41")) return "Red";
-	if(inp.includes("32")||inp.includes(" 42")) return "Green";
-	if(inp.includes("33")||inp.includes(" 43")) return "Gold";
-	if(inp.includes("34")||inp.includes(" 44")) return "Blue";
-	if(inp.includes("35")||inp.includes(" 45")) return "Magenta";
-	if(inp.includes("36")||inp.includes(" 46")) return "Cyan";
-	if(inp.includes("37")||inp.includes(" 47")) return "Gray";
-	if(inp.includes("90")||inp.includes("100")) return "DimGray";
-	if(inp.includes("91")||inp.includes("101")) return "Orchid";
-	if(inp.includes("92")||inp.includes("102")) return "Lime";
-	if(inp.includes("93")||inp.includes("103")) return "Yellow";
-	if(inp.includes("94")||inp.includes("104")) return "Teal";
-	if(inp.includes("95")||inp.includes("105")) return "Plum";
-	if(inp.includes("96")||inp.includes("106")) return "Cyan";
-	if(inp.includes("97")||inp.includes("107")) return "White";
+	if(inp.includes("30")||inp.includes( "40")) return "rgb(40,40,40)";	//Black (dark)
+	if(inp.includes("31")||inp.includes( "41")) return "#cc241d";		//Red
+	if(inp.includes("32")||inp.includes( "42")) return "#00ff00";		//Green
+	if(inp.includes("33")||inp.includes( "43")) return "rgb(255,255,0)";//Yellow
+	if(inp.includes("34")||inp.includes( "44")) return "#458588"; 		//Blue
+	if(inp.includes("35")||inp.includes( "45")) return "Magenta"; 		//Magenta
+	if(inp.includes("36")||inp.includes( "46")) return "Cyan";			//Cyan
+	if(inp.includes("37")||inp.includes( "47")) return "Gray";			//White (dark)
+	if(inp.includes("90")||inp.includes("100")) return "DimGray";		//Black	(light)
+	if(inp.includes("91")||inp.includes("101")) return "#fb4934";		//red
+	if(inp.includes("92")||inp.includes("102")) return "Lime";			//green
+	if(inp.includes("93")||inp.includes("103")) return "#fabd2f";		//Yellow
+	if(inp.includes("94")||inp.includes("104")) return "#89b4fa";		//Blue
+	if(inp.includes("95")||inp.includes("105")) return "#f38ba8";		//Magenta
+	if(inp.includes("96")||inp.includes("106")) return "Cyan";			//Cyan
+	if(inp.includes("97")||inp.includes("107")) return "#ffffff";		//White (light)
 }
 
 fetch('test.txt')
@@ -124,25 +124,27 @@ fetch('test.txt')
 				
 			}
 			else if(tokens[i][0] == '['){
-				if(tokens[i].startsWith("[38;2;")){
-					tokens[i] = tokens[i].substring(6);
-					colfg = "rgb("+tokens[i].substring(0, tokens[i].indexOf(';'))+',';
-					tokens[i] = tokens[i].substring(tokens[i].indexOf(';')+1);
-					colfg+= tokens[i].substring(0, tokens[i].indexOf(';'))+',';
-					tokens[i] = tokens[i].substring(tokens[i].indexOf(';')+1);
-					colfg+= tokens[i].substring(0, tokens[i].indexOf(';'))+')';
-					tokens[i] = tokens[i].substring(tokens[i].indexOf(';'));
+				if(tokens[i].includes("[38;2;") || tokens[i].includes(";48;2;")){
+					if(tokens[i].startsWith("[38;2;")){
+						tokens[i] = tokens[i].substring(6);
+						colfg = "rgb("+tokens[i].substring(0, tokens[i].indexOf(';'))+',';
+						tokens[i] = tokens[i].substring(tokens[i].indexOf(';')+1);
+						colfg+= tokens[i].substring(0, tokens[i].indexOf(';'))+',';
+						tokens[i] = tokens[i].substring(tokens[i].indexOf(';')+1);
+						colfg+= tokens[i].substring(0, tokens[i].indexOf(';'))+')';
+						tokens[i] = tokens[i].substring(tokens[i].indexOf(';'));
+					}
+					if(tokens[i].startsWith(";48;2;")){
+						tokens[i] = tokens[i].substring(6);
+						colbg = "rgb("+tokens[i].substring(0, tokens[i].indexOf(';'))+',';
+						tokens[i] = tokens[i].substring(tokens[i].indexOf(';')+1);
+						colbg+= tokens[i].substring(0, tokens[i].indexOf(';'))+',';
+						tokens[i] = tokens[i].substring(tokens[i].indexOf(';')+1);
+						colbg+= tokens[i].substring(0, tokens[i].indexOf('m'))+')';
+						tokens[i] = tokens[i].substring(tokens[i].indexOf('m')+1);
+					}
 				}
-				if(tokens[i].startsWith(";48;2;")){
-					tokens[i] = tokens[i].substring(6);
-					colbg = "rgb("+tokens[i].substring(0, tokens[i].indexOf(';'))+',';
-					tokens[i] = tokens[i].substring(tokens[i].indexOf(';')+1);
-					colbg+= tokens[i].substring(0, tokens[i].indexOf(';'))+',';
-					tokens[i] = tokens[i].substring(tokens[i].indexOf(';')+1);
-					colbg+= tokens[i].substring(0, tokens[i].indexOf('m'))+')';
-					tokens[i] = tokens[i].substring(tokens[i].indexOf('m')+1);
-				}
-				if(!(tokens[i].includes("[38;2;") || tokens[i].includes(";48;2;"))){
+				else{
 					if(tokens[i].substring(1,3) >= 100 || (tokens[i].substring(1,3) >= 40 &&tokens[i].substring(1,3) <= 50))
 						colbg = ansiTable(tokens[i].substring(1,3));
 					else
@@ -152,9 +154,8 @@ fetch('test.txt')
 					else
 						colbg = ansiTable(tokens[i].substring(4,7));
 					tokens[i] = tokens[i].substring(7);
-					if(tokens[i][0]=="m")
+					if(tokens[i][0]=="m" && tokens[i].length < 3)
 						tokens[i] = tokens[i].substring(1);
-					console.log(tokens[i], tokens[i].length);
 				}
 				printer(posX,posY, colbg, colfg, tokens[i]);
 			}
