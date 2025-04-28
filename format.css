@@ -11,11 +11,12 @@ blink, .blink-css {
 }
 body {
 	background-color: rgb(30, 30, 46);
+	color: rgb(204,214,244);
 }
 #ansible {
     font-family: "FavFont", monospace !important;
-    font-size: 30px;
-	margin-top: 25vh;
+    font-size: 20px;
+	margin-top: 2vh;
     padding: 0px;
 	position: flex;
 	justify-content: center;

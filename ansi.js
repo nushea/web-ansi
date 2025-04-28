@@ -13,6 +13,7 @@ regbg = "rgb(24,24,37)";
 
 ansible.style.fontSize = fontSize+"pt";
 ansible.style.fontFamily = "FavFont, monospace";
+ansible.style.marginTop = "25vh";
 //ansible.style.fontWeight = 'bold';
 
 arr = Array.from({ length: sizeY }, () => Array(sizeX).fill(0));
